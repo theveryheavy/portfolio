@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Portfolio</title>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<style>
+html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradient(to bottom right,#0c3ca5,#00103d);font-family:Arial,sans-serif}
+.overlay{position:fixed;z-index:9999;background:black;color:white;width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:2rem;cursor:pointer;transition:opacity 1s ease}
+.overlay.hidden{pointer-events:none}
+.container,canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#canvas3{z-index:5}#canvas2{z-index:10}#canvas1{z-index:15}
+
+.card {
+  background: rgba(0,0,0,.27);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0,0,0,.1);
+  backdrop-filter: blur(6.6px);
+  -webkit-backdrop-filter: blur(6.6px);
+  border:1px solid rgba(0,0,0,.57);
+  padding: 20px;
+  color:white;
+  width: 80vw;
+  max-width: 950px;
+  margin: 40px auto;
+  text-align: center;
+  line-height: 1.3;
+  pointer-events:auto;
+  position: relative;
+  transform: none;
+}
+
+.card ul,.card ol{
+  display:inline-block;
+  text-align:left;
+  padding-left:0;
+  margin:0 auto 1em auto;
+}
+
+.card li{margin:0.3em 0}
+
+#startOverlay{font-size:120px;font-family:'Coiny',cursive}
+.card h1,.card h2,.card h3{color:#aad8ff;margin-bottom:.3em}
+.card p{line-height:1.4;margin:.5em 0}
+.card ul{padding-left:20px;text-align:left}
+.card a{color:#88c0d0;text-decoration:none}
+.card a:hover{text-decoration:underline}
+
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(4px);
+  border-radius:10px;
+}
+::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.35);
+  border-radius:10px;
+  border:3px solid rgba(0,0,0,0);
+  background-clip:padding-box;
+}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.55)}
+*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.35) rgba(0,0,0,0.25)}
+</style>
+
+</head>
+<body>
+
+<div class="overlay" id="startOverlay">Click Me</div>
+
+<div class="container">
+  <canvas id="canvas1"></canvas>
+  <canvas id="canvas2"></canvas>
+  <canvas id="canvas3"></canvas>
+</div>
+
+<div class="card">Loading portfolio...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+const c1=document.getElementById('canvas1'),c2=document.getElementById('canvas2'),c3=document.getElementById('canvas3');
+const x1=c1.getContext('2d'),x2=c2.getContext('2d'),x3=c3.getContext('2d');
+const rainSound=new Audio('rain.mp3'),lightningSound=new Audio('thunder.mp3');
+const music=new Audio('music.mp3');
+music.loop=true;music.volume=.7;
+rainSound.loop=true;rainSound.volume=.5;lightningSound.volume=.6;
+
+let w=c1.width=c2.width=c3.width=innerWidth;
+let h=c1.height=c2.height=c3.height=innerHeight;
+
+onresize=()=>{w=c1.width=c2.width=c3.width=innerWidth;h=c1.height=c2.height=c3.height=innerHeight};
+
+const R=[],T=[],L=[];
+const RC=500,TC=500;
+let lt=0,ltm=1200;
+
+const rnd=(a,b)=>Math.random()*(b-a)+a;
+
+for(let i=0;i<RC;i++)R[i]={x:rnd(0,w),y:rnd(0,h),l:Math.random(),xs:0,ys:rnd(10,20)};
+for(let i=0;i<TC;i++)T[i]={x:rnd(0,w),y:rnd(0,h),length:Math.floor(rnd(1,830)),opacity:Math.random()*0.2,xs:2,ys:rnd(10,20)};
+
+function rainDrop(i){
+  x2.beginPath();
+  x2.moveTo(R[i].x,R[i].y);
+  x2.lineTo(R[i].x,R[i].y+R[i].l*R[i].ys);
+  x2.strokeStyle='rgba(174,194,224,0.5)';
+  x2.lineWidth=1;
+  x2.stroke();
+}
+
+function trough(i){
+  x1.beginPath();
+  const g=x1.createLinearGradient(0,T[i].y,0,T[i].y+T[i].length);
+  g.addColorStop(0,'rgba(255,255,255,0)');
+  g.addColorStop(1,'rgba(255,255,255,'+T[i].opacity+')');
+  x1.fillStyle=g;
+  x1.fillRect(T[i].x,T[i].y,1,T[i].length);
+}
+
+function flash(){
+  for(let i=0;i<L.length;i++){
+    const l=L[i];
+    l.path.push({x:l.path.at(-1).x+rnd(-l.xRange/2,l.xRange/2),y:l.path.at(-1).y+rnd(0,l.yRange)});
+    if(l.path.length>l.pathLimit)L.splice(i,1);
+    x3.beginPath();
+    x3.strokeStyle='rgba(255,255,255,0.6)';
+    x3.lineWidth=3;
+    x3.moveTo(l.x,l.y);
+    for(let p of l.path)x3.lineTo(p.x,p.y);
+    x3.stroke();
+    if(Math.random()<.05){
+      x3.fillStyle='rgba(255,255,255,.1)';
+      x3.fillRect(0,0,w,h);
+      lightningSound.currentTime=0;
+      lightningSound.play();
+    }
+  }
+}
+
+function makeLight(){
+  const x=rnd(100,w-100),y=rnd(0,h/4),c=Math.floor(rnd(1,3));
+  for(let i=0;i<c;i++)L.push({x,y,xRange:rnd(5,30),yRange:rnd(10,25),path:[{x,y}],pathLimit:Math.floor(rnd(40,55))});
+}
+
+function animRain(){
+  x2.clearRect(0,0,w,h);
+  for(let i=0;i<R.length;i++){
+    R[i].x+=R[i].xs;R[i].y+=R[i].ys;
+    if(R[i].x>w||R[i].y>h){R[i].x=rnd(0,w);R[i].y=-20;}
+    rainDrop(i);
+  }
+}
+
+function animTrough(){
+  x1.clearRect(0,0,w,h);
+  for(let i=0;i<T.length;i++){
+    T[i].y=T[i].y>=h?-T[i].length*5:T[i].y+T[i].ys;
+    trough(i);
+  }
+}
+
+function animLight(){
+  x3.globalCompositeOperation='destination-out';
+  x3.fillStyle='rgba(0,0,0,.05)';
+  x3.fillRect(0,0,w,h);
+  x3.globalCompositeOperation='source-over';
+  if(++lt>=ltm){makeLight();lt=0;ltm=Math.floor(rnd(800,1500));}
+  flash();
+}
+
+function loop(){
+  animTrough();
+  animRain();
+  animLight();
+  requestAnimationFrame(loop);
+}
+
+let canClick=1;
+startOverlay.onclick=()=>{
+  if(canClick){
+    startOverlay.classList.add("hidden");
+    canClick=0;
+    rainSound.play();
+    music.play();
+    startOverlay.style.opacity="0";
+    setTimeout(()=>startOverlay.style.display="none",1000);
+    loop();
+  }
+};
+
+async function loadMarkdown(){
+  try{
+    const r=await fetch(`content.md?cache-bust=${Date.now()}`);
+    const t=await r.text();
+    document.querySelector('.card').innerHTML=marked.parse(t);
+  }catch{
+    document.querySelector('.card').innerText='Failed to load portfolio content.';
+  }
+}
+loadMarkdown();
+</script>
+</body>
+</html>
