@@ -2,7 +2,7 @@
 
 # Welcome to my Portfolio
 
-Sup. I’m a **full-stack developer** with *5 decades* of experience (started in 2020, trust).
+Sup. I’m a **full-stack developer** with *half a decade* of experience (started in 2020, trust).
 
 I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what I was fixing in the first place.
 
@@ -31,4 +31,5 @@ I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what
 ## Contact Me
 - 📧 Email: [contact@theveryheavy.eu](mailto:contact@theveryheavy.eu)  
 - 💻 GitHub: [theveryheavy](https://github.com/theveryheavy)  
+
 - 🌐 Personal site: [theveryheavy.eu](https://theveryheavy.eu)
