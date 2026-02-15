@@ -34,7 +34,7 @@ I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what
 
 <img src="project3.png" alt="Project Two Screenshot" style="width:300px; max-width:100%; border-radius:8px;">
 
-**ProInstal, Polish business website** 
+**ProInstal Polish business website** 
 
 [Link for website](https://proinstal-firma.pl)
 
@@ -45,4 +45,5 @@ I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what
 - 💻 GitHub: [theveryheavy](https://github.com/theveryheavy)  
 
 - 🌐 Personal site: [theveryheavy.eu](https://theveryheavy.eu)
+
 
