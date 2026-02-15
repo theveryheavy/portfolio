@@ -26,6 +26,18 @@ I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what
 
 [Play on itch.io](https://theveryheavy.itch.io/geomance)
 
+<img src="project2.png" alt="Project Two Screenshot" style="width:300px; max-width:100%; border-radius:8px;">
+
+**is-a.dev Cloudflare custom error pages** 
+
+[Check it out on GitHub](https://github.com/theveryheavy/is-a.dev-errors)
+
+<img src="project3.png" alt="Project Two Screenshot" style="width:300px; max-width:100%; border-radius:8px;">
+
+**ProInstal, Polish business website** 
+
+[Link for website](https://proinstal-firma.pl)
+
 ---
 
 ## Contact Me
@@ -33,3 +45,4 @@ I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what
 - 💻 GitHub: [theveryheavy](https://github.com/theveryheavy)  
 
 - 🌐 Personal site: [theveryheavy.eu](https://theveryheavy.eu)
+
