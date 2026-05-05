@@ -6,33 +6,42 @@
 <title>404 - Page Not Found</title>
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3465274710800188" crossorigin="anonymous"></script>
 <style>
-html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradient(to bottom right,#0c3ca5,#00103d);font-family:Arial,sans-serif}
-.overlay{position:fixed;z-index:9999;background:black;color:white;width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:120px;cursor:pointer;transition:opacity 1s ease;text-align:center}
-.overlay.hidden{pointer-events:none}
+html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradient(to bottom right,#0c3ca5,#00103d);font-family:Arial,sans-serif;color:#fff}
+.overlay{position:fixed;z-index:9999;background:#000;color:#fff;width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:120px;cursor:pointer;transition:opacity 1s ease;text-align:center;animation:overlayPulse 2.2s ease-in-out infinite}
+.overlay.hidden{pointer-events:none;animation:none}
+@keyframes overlayPulse{0%,100%{opacity:1}50%{opacity:.68}}
 .container,canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 #canvas3{z-index:5}#canvas2{z-index:10}#canvas1{z-index:15}
 
-.card {
-  background: rgba(0,0,0,.27);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0,0,0,.1);
-  backdrop-filter: blur(6.6px);
-  -webkit-backdrop-filter: blur(6.6px);
+.card{
+  background:rgba(0,0,0,.27);
+  border-radius:16px;
+  box-shadow:0 4px 30px rgba(0,0,0,.18);
+  backdrop-filter:blur(6.6px);
+  -webkit-backdrop-filter:blur(6.6px);
   border:1px solid rgba(0,0,0,.57);
-  padding: 20px;
-  color:white;
-  width: 80vw;
-  max-width: 950px;
-  margin: 40px auto;
-  text-align: center;
-  line-height: 1.3;
+  padding:22px;
+  color:#fff;
+  width:min(950px,82vw);
+  margin:46px auto;
+  text-align:center;
+  line-height:1.35;
   pointer-events:auto;
-  position: relative;
-}
+  position:relative;
+ }
 
-.card h1{color:#aad8ff;margin-bottom:.5em}
-.card p{line-height:1.4;margin:.5em 0}
+.content-shell{opacity:0;transform:translateY(16px);pointer-events:none}
+body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.36,1) .08s forwards;pointer-events:auto}
+@keyframes contentFadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.card h1,.card h2,.card h3{color:#aad8ff;margin:.35em 0}
+.card p{line-height:1.45;margin:.6em 0}
+.card a{color:#8ed0ff;text-decoration:none}
+.card a:hover{text-decoration:underline}
+
+.hidden{display:none}
 
 ::-webkit-scrollbar{width:14px}
 ::-webkit-scrollbar-track{background:rgba(0,0,0,0.25);backdrop-filter:blur(4px);border-radius:10px}
@@ -40,8 +49,9 @@ html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradien
 ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.55)}
 *{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.35) rgba(0,0,0,0.25)}
 
-@media (max-width:600px){
+@media (max-width:680px){
   .overlay{font-size:60px;padding:0 10px;line-height:1.1}
+  .card{width:min(960px,92vw);padding:16px;margin:20px auto 90px auto}
 }
 </style>
 </head>
@@ -55,7 +65,7 @@ html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradien
   <canvas id="canvas3"></canvas>
 </div>
 
-<div class="card">
+<div class="card content-shell" id="notFoundCard">
   <h1>404</h1>
   <p>Page Not Found</p>
   <p><a href="/">Go Back Home</a></p>
@@ -64,43 +74,127 @@ html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradien
 <script>
 const c1=document.getElementById('canvas1'),c2=document.getElementById('canvas2'),c3=document.getElementById('canvas3');
 const x1=c1.getContext('2d'),x2=c2.getContext('2d'),x3=c3.getContext('2d');
-const rainSound=new Audio('rain.mp3'),lightningSound=new Audio('thunder.mp3'),music=new Audio('music.mp3');
-music.loop=true;music.volume=.7;rainSound.loop=true;rainSound.volume=.5;lightningSound.volume=.6;
+const rainSound=new Audio('rain.mp3'),lightningSound=new Audio('thunder.mp3');
+const music=new Audio('music.mp3');
+music.loop=true;music.volume=.7;
+rainSound.loop=true;rainSound.volume=.5;lightningSound.volume=.6;
 
 let w=c1.width=c2.width=c3.width=innerWidth;
 let h=c1.height=c2.height=c3.height=innerHeight;
+
 onresize=()=>{w=c1.width=c2.width=c3.width=innerWidth;h=c1.height=c2.height=c3.height=innerHeight};
 
 const R=[],T=[],L=[];
-const isMobile = innerWidth < 700;
-const RC = isMobile ? 180 : 500;
-const TC = isMobile ? 180 : 500;
+const isMobile=innerWidth<700;
+const RC=isMobile?180:500;
+const TC=isMobile?180:500;
 let lt=0,ltm=1200;
+
 const rnd=(a,b)=>Math.random()*(b-a)+a;
+const safePlay=(audio)=>audio.play().catch(()=>{});
 
 for(let i=0;i<RC;i++)R[i]={x:rnd(0,w),y:rnd(0,h),l:Math.random(),xs:0,ys:rnd(10,20)};
 for(let i=0;i<TC;i++)T[i]={x:rnd(0,w),y:rnd(0,h),length:Math.floor(rnd(1,830)),opacity:Math.random()*0.2,xs:2,ys:rnd(10,20)};
 
-function rainDrop(i){x2.beginPath();x2.moveTo(R[i].x,R[i].y);x2.lineTo(R[i].x,R[i].y+R[i].l*R[i].ys);x2.strokeStyle='rgba(174,194,224,0.5)';x2.lineWidth=1;x2.stroke()}
-function trough(i){x1.beginPath();const g=x1.createLinearGradient(0,T[i].y,0,T[i].y+T[i].length);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(1,'rgba(255,255,255,'+T[i].opacity+')');x1.fillStyle=g;x1.fillRect(T[i].x,T[i].y,1,T[i].length)}
-function flash(){for(let i=0;i<L.length;i++){const l=L[i];l.path.push({x:l.path.at(-1).x+rnd(-l.xRange/2,l.xRange/2),y:l.path.at(-1).y+rnd(0,l.yRange)});if(l.path.length>l.pathLimit)L.splice(i,1);x3.beginPath();x3.strokeStyle='rgba(255,255,255,0.6)';x3.lineWidth=3;x3.moveTo(l.x,l.y);for(let p of l.path)x3.lineTo(p.x,p.y);x3.stroke();if(Math.random()<.05){x3.fillStyle='rgba(255,255,255,.1)';x3.fillRect(0,0,w,h);lightningSound.currentTime=0;lightningSound.play()}}}
-function makeLight(){const x=rnd(100,w-100),y=rnd(0,h/4),c=Math.floor(rnd(1,3));for(let i=0;i<c;i++)L.push({x,y,xRange:rnd(5,30),yRange:rnd(10,25),path:[{x,y}],pathLimit:Math.floor(rnd(40,55)})})}
-function animRain(){x2.clearRect(0,0,w,h);for(let i=0;i<R.length;i++){R[i].x+=R[i].xs;R[i].y+=R[i].ys;if(R[i].x>w||R[i].y>h){R[i].x=rnd(0,w);R[i].y=-20}rainDrop(i)}}
-function animTrough(){x1.clearRect(0,0,w,h);for(let i=0;i<T.length;i++){T[i].y=T[i].y>=h?-T[i].length*5:T[i].y+T[i].ys;trough(i)}}
-function animLight(){x3.globalCompositeOperation='destination-out';x3.fillStyle='rgba(0,0,0,.05)';x3.fillRect(0,0,w,h);x3.globalCompositeOperation='source-over';if(++lt>=ltm){makeLight();lt=0;ltm=Math.floor(rnd(800,1500))}flash()}
-function loop(){animTrough();animRain();animLight();requestAnimationFrame(loop)}
+function rainDrop(i){
+  x2.beginPath();
+  x2.moveTo(R[i].x,R[i].y);
+  x2.lineTo(R[i].x,R[i].y+R[i].l*R[i].ys);
+  x2.strokeStyle='rgba(174,194,224,0.5)';
+  x2.lineWidth=1;
+  x2.stroke();
+}
 
+function trough(i){
+  x1.beginPath();
+  const g=x1.createLinearGradient(0,T[i].y,0,T[i].y+T[i].length);
+  g.addColorStop(0,'rgba(255,255,255,0)');
+  g.addColorStop(1,'rgba(255,255,255,'+T[i].opacity+')');
+  x1.fillStyle=g;
+  x1.fillRect(T[i].x,T[i].y,1,T[i].length);
+}
+
+function flash(){
+  for(let i=0;i<L.length;i++){
+    const l=L[i];
+    l.path.push({x:l.path.at(-1).x+rnd(-l.xRange/2,l.xRange/2),y:l.path.at(-1).y+rnd(0,l.yRange)});
+    if(l.path.length>l.pathLimit)L.splice(i,1);
+    x3.beginPath();
+    x3.strokeStyle='rgba(255,255,255,0.6)';
+    x3.lineWidth=3;
+    x3.moveTo(l.x,l.y);
+    for(const p of l.path)x3.lineTo(p.x,p.y);
+    x3.stroke();
+    if(Math.random()<.05){
+      x3.fillStyle='rgba(255,255,255,.1)';
+      x3.fillRect(0,0,w,h);
+      lightningSound.currentTime=0;
+      safePlay(lightningSound);
+    }
+  }
+}
+
+function makeLight(){
+  const x=rnd(100,w-100),y=rnd(0,h/4),c=Math.floor(rnd(1,3));
+  for(let i=0;i<c;i++)L.push({x,y,xRange:rnd(5,30),yRange:rnd(10,25),path:[{x,y}],pathLimit:Math.floor(rnd(40,55))});
+}
+
+function animRain(){
+  x2.clearRect(0,0,w,h);
+  for(let i=0;i<R.length;i++){
+    R[i].x+=R[i].xs;R[i].y+=R[i].ys;
+    if(R[i].x>w||R[i].y>h){R[i].x=rnd(0,w);R[i].y=-20;}
+    rainDrop(i);
+  }
+}
+
+function animTrough(){
+  x1.clearRect(0,0,w,h);
+  for(let i=0;i<T.length;i++){
+    T[i].y=T[i].y>=h?-T[i].length*5:T[i].y+T[i].ys;
+    trough(i);
+  }
+}
+
+function animLight(){
+  x3.globalCompositeOperation='destination-out';
+  x3.fillStyle='rgba(0,0,0,.05)';
+  x3.fillRect(0,0,w,h);
+  x3.globalCompositeOperation='source-over';
+  if(++lt>=ltm){makeLight();lt=0;ltm=Math.floor(rnd(800,1500));}
+  flash();
+}
+
+function loop(){
+  animTrough();
+  animRain();
+  animLight();
+  requestAnimationFrame(loop);
+}
+
+const startOverlay=document.getElementById('startOverlay');
 let canClick=1;
+
 startOverlay.onclick=()=>{
-if(canClick){
-  startOverlay.classList.add("hidden");
+  if(!canClick)return;
   canClick=0;
-  rainSound.play();
-  setTimeout(()=>{music.play();lightningSound.load()},50);
-  startOverlay.style.opacity="0";
-  setTimeout(()=>startOverlay.style.display="none",1000);
+  startOverlay.classList.add('hidden');
+  startOverlay.style.opacity='0';
+
+  safePlay(rainSound);
+  setTimeout(()=>{
+    lightningSound.load();
+    safePlay(music);
+  },60);
+
+  setTimeout(()=>{startOverlay.style.display='none';},1000);
+
+  requestAnimationFrame(()=>{
+    document.body.classList.add('page-live');
+  });
+
   loop();
-}}
+};
 </script>
 </body>
 </html>
