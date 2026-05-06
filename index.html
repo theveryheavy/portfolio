@@ -4,6 +4,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Portfolio</title>
+<meta name="description" content="Full-stack developer with half a decade of experience. I build stuff, break stuff, fix stuff, automate stuff.">
+<meta property="og:title" content="Portfolio - theveryheavy">
+<meta property="og:description" content="Full-stack developer with half a decade of experience. I build stuff, break stuff, fix stuff, automate stuff.">
+<meta property="og:image" content="banner.png">
+<meta property="og:url" content="https://theveryheavy.eu">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <style>
@@ -396,13 +403,13 @@ startOverlay.onclick=()=>{
     safePlay(music);
   },60);
 
-  setTimeout(()=>{startOverlay.style.display='none';},1000);
+setTimeout(()=>{startOverlay.style.display='none';},1000);
 
   const openSourcePanel=document.getElementById('openSourcePanel');
   openSourcePanel.classList.remove('hidden');
   requestAnimationFrame(()=>{
     document.body.classList.add('page-live');
-    openSourcePanel.classList.add('revealed');
+openSourcePanel.classList.add('revealed');
   });
 
   startAutoSlide();
