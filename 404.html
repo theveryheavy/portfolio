@@ -137,6 +137,7 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 .adblock-close{position:absolute;top:10px;right:14px;background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .adblock-close:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.1)}
 .adblock-body h3{color:#aad8ff;margin:0 0 8px;font-size:20px}
+.adblock-img{width:72px;height:72px;border-radius:50%;object-fit:cover;margin:6px auto 10px;display:block;border:2px solid rgba(255,255,255,.2)}
 .adblock-body p{margin:6px 0;color:rgba(255,255,255,.8);font-size:14px;line-height:1.5}
 .adblock-yes{margin-top:16px;background:rgba(74,222,128,.16);border:1px solid rgba(74,222,128,.5);color:#4ade80;font-weight:700;font-size:15px;padding:10px 26px;border-radius:8px;cursor:pointer;transition:background .2s ease,border-color .2s ease}
 .adblock-yes:hover{background:rgba(74,222,128,.28)}
@@ -344,8 +345,9 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
   <button class="adblock-close" id="adblockClose" aria-label="Close and ignore">&times;</button>
   <div class="adblock-body">
     <h3>Hello Bradar</h3>
-    <p>It seems that you're blocking my cameras to track our toes.</p>
-    <p>Make the bradar happy and disable blocking.</p>
+    <img src="bradar.png" alt="Bradar" class="adblock-img">
+    <p>It seems that you're blocking my cameras to track your toes.</p>
+    <p>Make the Bradar happy and disable blocking.</p>
   </div>
   <button class="adblock-yes" id="adblockYes">Yes Bradar</button>
 </div>
@@ -591,6 +593,10 @@ setTimeout(()=>{startOverlay.style.display='none';},1000);
     openSourcePanel.classList.add('revealed');
     playerEl.classList.add('visible');
   });
+  if(window.bradarCheckShow){
+    window.bradarOverlayClicked=true;
+    window.bradarCheckShow();
+  }
 
   startAutoSlide();
   loop();
@@ -599,44 +605,49 @@ setTimeout(()=>{startOverlay.style.display='none';},1000);
 // ----- Bradar anti-blocker detector -----
 (function(){
   var bait=document.getElementById('adBait');
-  var blocked=0,total=0;
-  var THRESHOLD=5;
-
-  function baitCheck(){
-    total++;
-    if(!bait) return;
+  var baitBlocked=false;
+  for(var i=0;i<20;i++){
+    if(!bait){baitBlocked=true;break;}
     var cs=getComputedStyle(bait);
     var h=bait.offsetHeight||bait.getBoundingClientRect().height;
-    if(h<1||cs.display==='none'||cs.visibility==='hidden'||cs.opacity==='0') blocked++;
+    if(h<1||cs.display==='none'||cs.visibility==='hidden'||cs.opacity==='0'){baitBlocked=true;break;}
   }
-  for(var i=0;i<20;i++) baitCheck();
 
-  function netCheck(){
-    total++;
+  var netBlocked=0;
+  var urls=[
+    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+    'https://static.cloudflareinsights.com/beacon.min.js',
+    'https://securepubads.g.doubleclick.net/tag/js/gpt.js'
+  ];
+  function probe(u){
     try{
-      fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',{mode:'no-cors',cache:'no-store'})
-        .then(function(){})
-        .catch(function(){blocked++;maybeShow();});
-    }catch(e){blocked++;maybeShow();}
+      var s=document.createElement('script');
+      s.src=u; s.async=true;
+      s.onload=function(){finish();};
+      s.onerror=function(){netBlocked++;finish();};
+      s.addEventListener('error',function(){netBlocked++;finish();});
+      document.head.appendChild(s);
+    }catch(e){netBlocked++;finish();}
   }
-  netCheck();
+  var pending=urls.length;
+  function finish(){ if(--pending<=0) maybeShow(); }
+  for(var j=0;j<urls.length;j++) probe(urls[j]);
+  setTimeout(function(){ if(pending>0) maybeShow(); }, 2500);
 
-  function showBanner(){
+  window.bradarOverlayClicked=false;
+  window.bradarDetected=!!(baitBlocked||netBlocked>=2);
+  window.bradarCheckShow=function(){
+    if(!window.bradarOverlayClicked) return;
+    if(!window.bradarDetected) return;
+    try{ if(sessionStorage.getItem('bradarIgnored')==='1') return; }catch(e){}
     var b=document.getElementById('adblockBanner');
     if(b) b.hidden=false;
-  }
-
+  };
   function maybeShow(){
-    if(blocked>=THRESHOLD) showBanner();
+    window.bradarDetected=!!(baitBlocked||netBlocked>=2);
+    if(window.bradarCheckShow) window.bradarCheckShow();
   }
   maybeShow();
-
-  try{
-    if(sessionStorage.getItem('bradarIgnored')==='1'){
-      var b=document.getElementById('adblockBanner');
-      if(b) b.hidden=true;
-    }
-  }catch(e){}
 
   document.getElementById('adblockYes').addEventListener('click',function(){ location.reload(); });
   document.getElementById('adblockClose').addEventListener('click',function(){
