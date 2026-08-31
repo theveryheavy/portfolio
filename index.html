@@ -132,6 +132,15 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 }
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.overlay{animation:none!important}.content-shell{opacity:1!important;transform:none!important}.open-source-panel{opacity:1!important;transform:none!important}.mini-player{opacity:1!important;transform:none!important}body:not(.page-live) .content-shell{opacity:1;transform:none;pointer-events:auto}}
+.adblock-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100001;width:min(360px,88vw);background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:26px 22px 22px;text-align:center;box-shadow:0 12px 50px rgba(0,0,0,.5);color:#fff}
+.adblock-banner[hidden]{display:none}
+.adblock-close{position:absolute;top:10px;right:14px;background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.adblock-close:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.1)}
+.adblock-body h3{color:#aad8ff;margin:0 0 8px;font-size:20px}
+.adblock-body p{margin:6px 0;color:rgba(255,255,255,.8);font-size:14px;line-height:1.5}
+.adblock-yes{margin-top:16px;background:rgba(74,222,128,.16);border:1px solid rgba(74,222,128,.5);color:#4ade80;font-weight:700;font-size:15px;padding:10px 26px;border-radius:8px;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.adblock-yes:hover{background:rgba(74,222,128,.28)}
+@media (max-width:680px){.adblock-banner{width:88vw;padding:22px 16px 18px}}
 </style>
 </head>
 <body>
@@ -326,6 +335,19 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
   <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
   <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Anti-blocker detection bait (hidden unless blocked) -->
+<div id="adBait" class="ad-slot ad-banner adsbox google_ads_iframe" style="position:absolute;left:-9999px;top:-9999px;height:1px;width:1px;overflow:hidden" aria-hidden="true"><div class="ad-frame ad-container"></div></div>
+
+<div class="adblock-banner" id="adblockBanner" role="alertdialog" aria-modal="true" aria-label="Ad blocker detected" hidden>
+  <button class="adblock-close" id="adblockClose" aria-label="Close and ignore">&times;</button>
+  <div class="adblock-body">
+    <h3>Hello Bradar</h3>
+    <p>It seems that you're blocking my cameras to track our toes.</p>
+    <p>Make the bradar happy and disable blocking.</p>
+  </div>
+  <button class="adblock-yes" id="adblockYes">Yes Bradar</button>
 </div>
 
 <script>
@@ -573,6 +595,56 @@ setTimeout(()=>{startOverlay.style.display='none';},1000);
   startAutoSlide();
   loop();
 };
+
+// ----- Bradar anti-blocker detector -----
+(function(){
+  var bait=document.getElementById('adBait');
+  var blocked=0,total=0;
+  var THRESHOLD=5;
+
+  function baitCheck(){
+    total++;
+    if(!bait) return;
+    var cs=getComputedStyle(bait);
+    var h=bait.offsetHeight||bait.getBoundingClientRect().height;
+    if(h<1||cs.display==='none'||cs.visibility==='hidden'||cs.opacity==='0') blocked++;
+  }
+  for(var i=0;i<20;i++) baitCheck();
+
+  function netCheck(){
+    total++;
+    try{
+      fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',{mode:'no-cors',cache:'no-store'})
+        .then(function(){})
+        .catch(function(){blocked++;maybeShow();});
+    }catch(e){blocked++;maybeShow();}
+  }
+  netCheck();
+
+  function showBanner(){
+    var b=document.getElementById('adblockBanner');
+    if(b) b.hidden=false;
+  }
+
+  function maybeShow(){
+    if(blocked>=THRESHOLD) showBanner();
+  }
+  maybeShow();
+
+  try{
+    if(sessionStorage.getItem('bradarIgnored')==='1'){
+      var b=document.getElementById('adblockBanner');
+      if(b) b.hidden=true;
+    }
+  }catch(e){}
+
+  document.getElementById('adblockYes').addEventListener('click',function(){ location.reload(); });
+  document.getElementById('adblockClose').addEventListener('click',function(){
+    try{sessionStorage.setItem('bradarIgnored','1');}catch(e){}
+    var b=document.getElementById('adblockBanner');
+    if(b) b.hidden=true;
+  });
+})();
 </script>
 </body>
 </html>
