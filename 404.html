@@ -22,12 +22,12 @@ html,body{margin:0;padding:0;height:100%;overflow:auto;background:linear-gradien
 #canvas3{z-index:5}#canvas2{z-index:10}#canvas1{z-index:15}
 
 .card{
-  background:rgba(0,0,0,.27);
-  border-radius:16px;
+  background:rgba(0,0,0,.38);
+  border-radius:10px;
   box-shadow:0 4px 30px rgba(0,0,0,.18);
-  backdrop-filter:blur(6.6px);
-  -webkit-backdrop-filter:blur(6.6px);
-  border:1px solid rgba(0,0,0,.57);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);
   padding:22px;
   color:#fff;
   width:min(950px,82vw);
@@ -58,11 +58,13 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 .project-control{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1;transition:border-color .2s ease,background .2s ease}
 .project-control:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
 .project-control:active{background:rgba(255,255,255,.15)}
-.project-viewport{overflow:hidden;border-radius:8px}
+.project-viewport{overflow:hidden}
 .project-track{display:flex;transition:transform .4s ease}
 .project-item{min-width:100%;box-sizing:border-box;padding:4px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center}
-.project-media{height:100%;border-radius:8px;overflow:hidden;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
-.project-media img{display:block;width:100%;height:100%;min-height:200px;max-height:280px;object-fit:contain}
+.project-media{width:100%;height:280px;max-width:420px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.project-media img{display:block;width:100%;height:100%;object-fit:contain}
+.project-item.highlight .project-details{border:1px solid rgba(74,222,128,.45);border-radius:10px;padding:12px 14px;background:rgba(74,222,128,.08)}
+.project-item.highlight .project-kicker{color:#4ade80}
 .project-details{text-align:center;padding:4px 2px}
 .project-kicker{display:block;color:#8ed0ff;font-size:11px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
 .project-details h3{margin:0 0 6px 0;font-size:18px}
@@ -72,6 +74,14 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 .project-link svg{width:12px;height:12px;flex:0 0 auto}
 .project-footer{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:14px;position:relative}
 .project-counter{font-size:12px;color:rgba(255,255,255,.5)}
+.project-media{cursor:zoom-in}
+.project-media img{transition:transform .2s ease}
+.project-media:hover img{transform:scale(1.03)}
+
+.lightbox{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.lightbox-close{position:fixed;top:16px;right:20px;z-index:10001;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
 .hidden{display:none}
 
@@ -100,7 +110,7 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 
 @media (max-width:900px){
   .project-item{grid-template-columns:1fr;gap:14px}
-  .project-media img{min-height:160px;max-height:220px}
+  .project-media{height:220px}
   .project-details{padding:8px 4px}
 }
 
@@ -108,16 +118,17 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
   .overlay{font-size:60px;padding:0 10px;line-height:1.1}
   .card{width:min(960px,92vw);padding:16px;margin:12px auto}
   .meta-list{padding-left:18px}
-  .project-media img{min-height:140px;max-height:180px}
+  .project-media{height:180px}
   .project-details h3{font-size:16px}
   .project-details p{font-size:13px}
   .project-footer{gap:16px}
   .project-control{width:26px;height:26px;font-size:14px}
   .project-counter{font-size:11px}
-  .open-source-panel{position:fixed;inset:auto 0 12px;margin:0 auto;padding:12px 10px 10px;max-width:90vw;width:fit-content;text-align:center}
+  .open-source-panel{position:static;margin:16px auto 0;padding:10px 12px 12px;max-width:min(960px,92vw);width:100%;text-align:center;opacity:1;transform:none;pointer-events:auto}
   .open-source-link{justify-content:center}
   .open-source-panel.revealed{animation:contentFadeIn .78s cubic-bezier(.22,.61,.36,1) .32s forwards;pointer-events:auto}
   .open-source-link span{font-size:13px}
+  .mini-player{position:static;margin:10px auto 16px;width:fit-content;max-width:90vw;opacity:1;transform:none;pointer-events:auto}
 }
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.overlay{animation:none!important}.content-shell{opacity:1!important;transform:none!important}.open-source-panel{opacity:1!important;transform:none!important}.mini-player{opacity:1!important;transform:none!important}body:not(.page-live) .content-shell{opacity:1;transform:none;pointer-events:auto}}
@@ -134,17 +145,27 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 </div>
 
 <div class="card content-shell" id="portfolioCard">
+  <!-- e-ZeeInternet counter · GDPR / cookie-free -->
+  <script async src="https://e-zeeinternet.com/t.js"
+    data-site="ezi_3f7b8c25e76c"
+    data-mode="gdpr"
+    data-theme="dark"
+    data-shape="rounded"
+    data-layout="row"></script>
+  <div style="margin:0 0 14px;display:flex;justify-content:center"><div data-ezee-counter></div></div>
+
   <img src="banner.png" alt="Banner" class="hero-banner">
 
 <h1>Welcome to my Portfolio</h1>
 
   <p>Sup. I'm a <strong>full-stack developer</strong> from <strong>Poland</strong> who started coding back in 2020.</p>
   <p>I build stuff, break stuff, fix stuff, automate stuff, and sometimes forget what I was fixing in the first place.</p>
-  <p class="available-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="14" height="14" style="vertical-align:middle;margin-right:4px"><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4Zm2-2v2h4V5h-4Z"/><path d="M2 14h20v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-3Z"/></svg> <strong>Open for work</strong> - Available for projects</p>
+  <p class="available-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="14" height="14" style="vertical-align:middle;margin-right:4px"><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4Zm2-2v2h4V5h-4Z"/><path d="M2 14h20v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-3Z"/></svg> <strong>Already employed</strong> - Happily working</p>
 
-  <h2>About Me</h2>
+  <h2>A Bit About Me</h2>
   <ul class="meta-list">
-    <li><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829zM2.5 21.5l1.4-1.4M20.1 3.9l1.4-1.4M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829zM9.6 14.4l4.8-4.8"/></svg> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m10.065 12.493l-6.18 1.318a.934.934 0 0 1-1.108-.702l-.537-2.15a1.07 1.07 0 0 1 .691-1.265l13.504-4.44m-2.875 6.493l4.332-.924M16 21l-3.105-6.21"/><path d="M16.485 5.94a2 2 0 0 1 1.455-2.425l1.09-.272a1 1 0 0 1 1.212.727l1.515 6.06a1 1 0 0 1-.727 1.213l-1.09.272a2 2 0 0 1-2.425-1.455zM6.158 8.633l1.114 4.456M8 21l3.105-6.21"/><circle cx="12" cy="13" r="2"/></g></svg> Fitness &amp; astrophotography</li>
+    <li><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829zM2.5 21.5l1.4-1.4M20.1 3.9l1.4-1.4M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829zM9.6 14.4l4.8-4.8"/></svg> Fitness</li>
+    <li><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m10.065 12.493l-6.18 1.318a.934.934 0 0 1-1.108-.702l-.537-2.15a1.07 1.07 0 0 1 .691-1.265l13.504-4.44m-2.875 6.493l4.332-.924M16 21l-3.105-6.21"/><path d="M16.485 5.94a2 2 0 0 1 1.455-2.425l1.09-.272a1 1 0 0 1 1.212.727l1.515 6.06a1 1 0 0 1-.727 1.213l-1.09.272a2 2 0 0 1-2.425-1.455zM6.158 8.633l1.114 4.456M8 21l3.105-6.21"/><circle cx="12" cy="13" r="2"/></g></svg> Astrophotography</li>
     <li><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect width="8" height="8" x="14" y="2" rx="1"/></g></svg> Building random apps</li>
     <li><svg fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></svg> Linux enthusiast (Arch, Proxmox, TrueNAS)</li>
     <li><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 1664 1664"><path fill="currentColor" d="M682 878v651L0 1435V878zm0-743v659H0V229zm982 743v786l-907-125V878zm0-878v794H757V125z"/></svg> Windows-friendly</li>
@@ -152,7 +173,7 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 
   <hr class="section-sep">
 
-  <h2>What I Do</h2>
+  <h2>The Tech I Use</h2>
   <ul class="meta-list">
     <li><svg fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg> HTML, CSS</li>
     <li><svg fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg> JavaScript, TypeScript</li>
@@ -172,20 +193,20 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 
   <hr class="section-sep">
 
-<h2>Projects</h2>
+<h2>Projects &amp; Experience</h2>
   <div class="project-slider" id="projectSlider" aria-roledescription="carousel" aria-label="Project slider">
     <div class="project-viewport">
       <div class="project-track" id="projectTrack">
-        <article class="project-item">
+        <article class="project-item highlight">
           <div class="project-media">
-            <img src="project1.png" alt="Fast-paced 2D shooter screenshot">
+            <img src="project5.png" alt="MoneYz Games Roblox studio">
           </div>
           <div class="project-details">
-            <span class="project-kicker">Game Project</span>
-            <h3>Geomance</h3>
-            <p>Arcade-style gameplay with quick movement, fast encounters, and responsive controls.</p>
-            <a class="project-link" href="https://theveryheavy.itch.io/geomance" target="_blank" rel="noopener noreferrer">
-              Play on itch.io
+            <span class="project-kicker">Currently Working With</span>
+            <h3>MoneYz Games</h3>
+            <p>An upcoming Roblox game dev studio focused on fun, unique, memorable experiences. I'm on the dev team taking on the tasks the lead dev hands me.</p>
+            <a class="project-link" href="https://www.roblox.com/share/g/763050130" target="_blank" rel="noopener noreferrer">
+              Roblox group
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </a>
           </div>
@@ -193,14 +214,14 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
 
         <article class="project-item">
           <div class="project-media">
-            <img src="project2.png" alt="is-a.dev Cloudflare custom error pages screenshot">
+            <img src="project6.png" alt="Schlonny Tech code studio">
           </div>
           <div class="project-details">
-<span class="project-kicker">Open Source Contribution</span>
-            <h3>is-a.dev — Cloudflare Custom Error Pages</h3>
-            <p>Contributed custom branded Cloudflare error pages for the is-a.dev open-source community project.</p>
-            <a class="project-link" href="https://github.com/theveryheavy/is-a.dev-errors" target="_blank" rel="noopener noreferrer">
-              Check it out on GitHub
+            <span class="project-kicker">Was on the team</span>
+            <h3>Schlonny Tech</h3>
+            <p>A small team of three making code stuff, apps, even whole new programming languages. I was the full-stack dev there.</p>
+            <a class="project-link" href="https://schlonnytech.online/" target="_blank" rel="noopener noreferrer">
+              Schlonny Tech site
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </a>
           </div>
@@ -211,11 +232,41 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
             <img src="project3.png" alt="Proinstal Polish business website screenshot">
           </div>
           <div class="project-details">
-            <span class="project-kicker">Business Website</span>
+            <span class="project-kicker">Built a site</span>
             <h3>Proinstal Polish business website</h3>
-            <p>Polish business website with a clear structure, practical content flow, and direct contact paths.</p>
+            <p>A business site for a Polish company. Kept it simple and clean so customers can actually find what they need and get in touch fast.</p>
 <a class="project-link" href="https://proinstal-firma.pl" target="_blank" rel="noopener noreferrer">
               Link for website
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="project-item">
+          <div class="project-media">
+            <img src="project2.png" alt="is-a.dev Cloudflare custom error pages screenshot">
+          </div>
+          <div class="project-details">
+<span class="project-kicker">Helped out with</span>
+            <h3>is-a.dev Cloudflare Custom Error Pages</h3>
+            <p>Threw together custom branded Cloudflare error pages for the is-a.dev community, so instead of a dead grey page you get one that actually looks like the project.</p>
+            <a class="project-link" href="https://github.com/theveryheavy/is-a.dev-errors" target="_blank" rel="noopener noreferrer">
+              Check it out on GitHub
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="project-item">
+          <div class="project-media">
+            <img src="project1.png" alt="Fast-paced 2D shooter screenshot">
+          </div>
+          <div class="project-details">
+            <span class="project-kicker">A game I made</span>
+            <h3>Geomance</h3>
+            <p>Fast little 2D shooter where you move quick, die faster, and keep coming back for one more run. Hard to put down.</p>
+            <a class="project-link" href="https://theveryheavy.itch.io/geomance" target="_blank" rel="noopener noreferrer">
+              Play on itch.io
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </a>
           </div>
@@ -226,9 +277,9 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
             <img src="project4.png" alt="importy PyPI package screenshot">
           </div>
           <div class="project-details">
-            <span class="project-kicker">Python Package</span>
+            <span class="project-kicker">A tool I shipped</span>
             <h3>importy</h3>
-            <p>Python CLI for understanding import relationships, architecture, and startup cost analysis.</p>
+            <p>A little Python CLI that shows you what your project imports, how it's all wired together, and what's eating your startup time.</p>
             <a class="project-link" href="https://pypi.org/project/importy/" target="_blank" rel="noopener noreferrer">
               View on PyPI
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 13L13 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7H13V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13 11V14.2C13 14.64 12.64 15 12.2 15H5.8C5.36 15 5 14.64 5 14.2V7.8C5 7.36 5.36 7 5.8 7H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -272,6 +323,11 @@ body.page-live .content-shell{animation:contentFadeIn .9s cubic-bezier(.22,.61,.
   <button class="mini-player-btn" id="muteBtn" aria-label="Mute"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
 </div>
 
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <script>
 const c1=document.getElementById('canvas1'),c2=document.getElementById('canvas2'),c3=document.getElementById('canvas3');
 const x1=c1.getContext('2d'),x2=c2.getContext('2d'),x3=c3.getContext('2d');
@@ -283,19 +339,31 @@ rainSound.loop=true;rainSound.volume=.5;lightningSound.volume=.6;
 let w=c1.width=c2.width=c3.width=innerWidth;
 let h=c1.height=c2.height=c3.height=innerHeight;
 
-addEventListener('resize',()=>{w=c1.width=c2.width=c3.width=innerWidth;h=c1.height=c2.height=c3.height=innerHeight});
+addEventListener('resize',()=>{
+  w=c1.width=c2.width=c3.width=innerWidth;
+  h=c1.height=c2.height=c3.height=innerHeight;
+  resizeParticles(R,particleCount(),newRainDrop);
+  resizeParticles(T,particleCount(),newTrough);
+});
 
 const R=[],T=[],L=[];
-const isMobile=innerWidth<700;
-const RC=isMobile?180:500;
-const TC=isMobile?180:500;
-let lt=0,ltm=1200;
+const particleCount=()=>{
+  if(innerWidth<700)return Math.floor(140*Math.sqrt(innerWidth*innerHeight/(600*800)));
+  return Math.floor(500*Math.sqrt(innerWidth*innerHeight/(1920*1080)));
+};
+const newRainDrop=()=>({x:rnd(0,w),y:rnd(0,h),l:Math.random(),xs:0,ys:rnd(10,20)});
+const newTrough=()=>({x:rnd(0,w),y:rnd(0,h),length:Math.floor(rnd(1,830)),opacity:Math.random()*0.2,xs:2,ys:rnd(10,20)});
+const resizeParticles=(arr,target,maker)=>{
+  while(arr.length<target)arr.push(maker());
+  arr.length=target;
+};
+let lt=0,ltm=6000;
 
 const rnd=(a,b)=>Math.random()*(b-a)+a;
 const safePlay=(audio)=>audio.play().catch(()=>{});
 
-for(let i=0;i<RC;i++)R[i]={x:rnd(0,w),y:rnd(0,h),l:Math.random(),xs:0,ys:rnd(10,20)};
-for(let i=0;i<TC;i++)T[i]={x:rnd(0,w),y:rnd(0,h),length:Math.floor(rnd(1,830)),opacity:Math.random()*0.2,xs:2,ys:rnd(10,20)};
+resizeParticles(R,particleCount(),newRainDrop);
+resizeParticles(T,particleCount(),newTrough);
 
 function rainDrop(i){
   x2.beginPath();
@@ -362,7 +430,7 @@ function animLight(){
   x3.fillStyle='rgba(0,0,0,.05)';
   x3.fillRect(0,0,w,h);
   x3.globalCompositeOperation='source-over';
-  if(++lt>=ltm){makeLight();lt=0;ltm=Math.floor(rnd(800,1500));}
+  if(++lt>=ltm){makeLight();lt=0;ltm=Math.floor(rnd(4000,8000));}
   flash();
 }
 
@@ -455,6 +523,30 @@ fetchNowPlaying();
 playerEl.onclick=()=>window.open('https://network.kngi.org/public/kngi_network','_blank');
 playerEl.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')window.open('https://network.kngi.org/public/kngi_network','_blank')};
 muteBtn.onclick=e=>{e.stopPropagation();music.muted=!music.muted;muteBtn.innerHTML=music.muted?muteSVG:speakerSVG};
+
+const lightbox=document.getElementById('lightbox');
+const lightboxImg=document.getElementById('lightboxImg');
+const lightboxClose=document.getElementById('lightboxClose');
+const openLightbox=src=>{
+  lightboxImg.src=src;
+  lightbox.classList.add('open');
+  stopAutoSlide();
+};
+const closeLightbox=()=>{
+  lightbox.classList.remove('open');
+  lightboxImg.src='';
+  startAutoSlide();
+};
+document.querySelectorAll('.project-media img').forEach(img=>{
+  img.addEventListener('click',()=>openLightbox(img.getAttribute('src')));
+});
+lightboxClose.addEventListener('click',closeLightbox);
+lightbox.addEventListener('click',e=>{
+  if(e.target===lightbox)closeLightbox();
+});
+addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeLightbox();
+});
 
 startOverlay.onclick=()=>{
   if(!canClick)return;
