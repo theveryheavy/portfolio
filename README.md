@@ -2,19 +2,11 @@
 
 # My Portfolio
 
-🌐 [Live Portfolio](https://theveryheavy.eu)
-
----
-
-## About
-
-My personal portfolio website showcasing my work as a full-stack developer.
-
-Built with vanilla HTML, CSS, and JavaScript - no frameworks needed.
+[Live View](https://theveryheavy.eu)
 
 ---
 
 *Open source - feel free to use as inspiration!*
 
-
+*AGPL-3.0 License lololololololololol*
 </div>
