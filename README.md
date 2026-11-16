@@ -1,12 +1,5 @@
 <div align="center">
-
-# My Portfolio
-
-[Live View](https://theveryheavy.eu)
-
----
-
-*Open source - feel free to use as inspiration!*
-
-*AGPL-3.0 License lololololololololol*
+  <a href="https://theveryheavy.eu/">
+    <img src="assets/banner.jpg" alt="theveryheavy/portfolio" width="100%" />
+  </a>
 </div>
